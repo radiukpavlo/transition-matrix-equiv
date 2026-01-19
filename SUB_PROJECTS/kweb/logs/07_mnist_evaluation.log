@@ -1,0 +1,72 @@
+================================================================================
+STEP 5.3: MNIST Experiment Evaluation and Visualization
+================================================================================
+
+Loading transition matrices...
+✓ Transition matrices loaded
+  T_old shape: (784, 490)
+  T_new shape: (784, 490)
+
+Loading trained CNN model...
+✓ Model loaded
+
+Loading MNIST test set...
+✓ MNIST test set loaded (10000 samples)
+
+Running rotation robustness experiment...
+  Rotation angles: -15.0° to 15.0° (15 steps)
+  Test samples: 1000
+
+  Progress: 0/1000 samples processed
+  Progress: 100/1000 samples processed
+  Progress: 200/1000 samples processed
+  Progress: 300/1000 samples processed
+  Progress: 400/1000 samples processed
+  Progress: 500/1000 samples processed
+  Progress: 600/1000 samples processed
+  Progress: 700/1000 samples processed
+  Progress: 800/1000 samples processed
+  Progress: 900/1000 samples processed
+  Progress: 1000/1000 samples processed
+✓ Rotation experiment complete in 6.47 seconds
+
+Computing summary statistics...
+✓ Summary statistics computed
+
+Baseline (T_old):
+  SSIM: 0.1680 ± 0.0514
+  PSNR: 12.00 ± 1.14 dB
+  MSE:  0.065353 ± 0.018399
+
+Equivariant (T_new):
+  SSIM: 0.0073 ± 0.0064
+  PSNR: 10.58 ± 1.41 dB
+  MSE:  0.092118 ± 0.029653
+
+Saving metrics to /app/sandbox/session_20260118_175817_da8f96a1d029/results/mnist_experiment.json...
+✓ Metrics saved
+
+Generating visualizations...
+✓ Saved: /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_reconstruction_comparison.png
+✓ Saved: /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_difference_maps.png
+/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/07_mnist_evaluation.py:398: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  bp1 = axes[0].boxplot(data_ssim, labels=['Baseline', 'Equivariant'], patch_artist=True)
+/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/07_mnist_evaluation.py:407: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+  bp2 = axes[1].boxplot(data_psnr, labels=['Baseline', 'Equivariant'], patch_artist=True)
+✓ Saved: /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_boxplots.png
+✓ Saved: /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_vs_angle.png
+
+================================================================================
+STEP 5.3: COMPLETE
+================================================================================
+Metrics saved to: /app/sandbox/session_20260118_175817_da8f96a1d029/results/mnist_experiment.json
+
+Generated figures:
+  1. /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_reconstruction_comparison.png
+  2. /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_difference_maps.png
+  3. /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_boxplots.png
+  4. /app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_vs_angle.png
+
+================================================================================
+STEP 5: MNIST EXPERIMENT EXECUTION - ALL COMPLETE
+================================================================================

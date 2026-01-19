@@ -101,6 +101,3 @@ The codebase includes a comprehensive test suite covering algebraic identities a
 ```bash
 python -m pytest tests/ -v
 ```
-
----
-*Reproduction by [K-Dense Team]*

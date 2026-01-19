@@ -1,0 +1,59 @@
+================================================================================
+STEP 5.1: MNIST Generator Estimation
+================================================================================
+
+Loading trained CNN model...
+✓ Model loaded from /app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/cnn_mnist.pth
+  Using device: cpu
+
+Loading MNIST dataset...
+✓ MNIST loaded
+  Training samples: 60000
+  Test samples: 10000
+
+Selecting 1000 samples for generator estimation...
+✓ Selected 1000 samples
+  Shape: torch.Size([1000, 1, 28, 28]) (N, C, H, W)
+
+Estimating generators J^A and J^B...
+  Rotation angle: ε = 0.0100 rad (0.5730°)
+  Expected dimensions:
+    J^A: (490, 490) - CNN feature space generator
+    J^B: (784, 784) - Pixel space generator
+
+Estimating generators with epsilon=0.0100 rad (0.5730 deg)
+Processing 1000 samples in batches of 100
+  Progress: 0/1000 samples processed
+  Progress: 1000/1000 samples processed
+Computing generators via least squares...
+  A shape: (1000, 490), ΔA shape: (1000, 490)
+  B shape: (1000, 784), ΔB shape: (1000, 784)
+Generator estimation complete!
+  J^A shape: (490, 490), rank: 477/490
+  J^B shape: (784, 784), rank: 591/784
+  Residual norms: ||A J^A^T - ΔA||_F = 0.000000, ||B J^B^T - ΔB||_F = 0.000000
+
+✓ Generator estimation complete in 0.19 seconds
+  J^A shape: (490, 490)
+  J^B shape: (784, 784)
+
+Verifying generator properties...
+  Antisymmetry check (should be small):
+    ||J^A + J^A^T||_F = 36557.347656
+    ||J^B + J^B^T||_F = 856.110474
+  Frobenius norms:
+    ||J^A||_F = 25847.785156
+    ||J^B||_F = 456.462494
+
+Saving generators to /app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/mnist_generators.npz...
+✓ Generators saved successfully
+
+================================================================================
+STEP 5.1: COMPLETE
+================================================================================
+Output: /app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/mnist_generators.npz
+  J^A: (490, 490) (CNN feature generator)
+  J^B: (784, 784) (Pixel space generator)
+
+Next step: Run 06_mnist_solver.py to compute T_new
+================================================================================

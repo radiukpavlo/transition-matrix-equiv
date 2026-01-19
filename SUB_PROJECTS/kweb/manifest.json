@@ -1,0 +1,382 @@
+{
+  "session_dir": "/app/sandbox/session_20260118_175817_da8f96a1d029",
+  "created": "1768752983.722381",
+  "current_step": "Step 5: MNIST Experiment Execution",
+  "status": "completed",
+  "outputs": [
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/synthetic_data.py",
+      "description": "Python module defining synthetic matrices A (15\u00d75) and B (15\u00d74) from manuscript Appendix 1.1",
+      "type": "module",
+      "step": "1"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/mnist_loader.py",
+      "description": "Python module for loading and preprocessing MNIST dataset (60k train, 10k test)",
+      "type": "module",
+      "step": "1"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/01_data_setup.py",
+      "description": "Verification script that validates data shapes and saves synthetic matrices",
+      "type": "script",
+      "step": "1"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/synthetic.npz",
+      "description": "Saved NumPy archive containing matrices A and B for easy loading",
+      "type": "data",
+      "step": "1"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/model.py",
+      "description": "MNIST CNN model implementation (5,920 params) matching Appendix B architecture",
+      "type": "module",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/baseline_utils.py",
+      "description": "Utility functions for computing transition matrices and reconstruction metrics (MSE, SSIM, PSNR)",
+      "type": "module",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/02_baseline_reproduction.py",
+      "description": "Main script for baseline reproduction: train CNN, extract features, compute T_old, evaluate metrics",
+      "type": "script",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/cnn_mnist.pth",
+      "description": "Trained CNN model weights (98.36% test accuracy)",
+      "type": "model",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/t_old_mnist.npy",
+      "description": "Baseline transition matrix T_old (784\u00d7490) computed using pseudoinverse method",
+      "type": "data",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/results/baseline_metrics.json",
+      "description": "Reconstruction metrics on test set: MSE=0.0684, SSIM=0.20\u00b10.07, PSNR=10.36\u00b10.79 dB",
+      "type": "results",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/logs/02_baseline_reproduction.log",
+      "description": "Detailed execution log for baseline reproduction",
+      "type": "log",
+      "step": "2"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/generators.py",
+      "description": "Generator estimation module: estimate J^A and J^B using finite differences or bridge method",
+      "type": "module",
+      "step": "3"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/solver.py",
+      "description": "Equivariant solver: solve for T using symmetry-constrained objective with LinearOperator",
+      "type": "module",
+      "step": "3"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/03_methodology_test.py",
+      "description": "Verification script for equivariant method on synthetic data",
+      "type": "script",
+      "step": "3"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/synthetic_generators.npz",
+      "description": "Saved generators J^A (5\u00d75) and J^B (4\u00d74), plus T_old and T_new for synthetic data",
+      "type": "data",
+      "step": "3"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/results/methodology_verification.json",
+      "description": "Verification results: 98.40% symmetry defect reduction, 13.69% total objective improvement",
+      "type": "results",
+      "step": "3"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/04_synthetic_experiment.py",
+      "description": "Robustness test script (CORRECTED): generates rotated data, demonstrates baseline outperforms equivariant on linear synthetic data",
+      "type": "script",
+      "step": "4"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/figures/synthetic_robustness.png",
+      "description": "Three-panel scatter plots: Ground Truth | Baseline (matches GT) | Equivariant (fails on linear data)",
+      "type": "figure",
+      "step": "4"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/results/synthetic_experiment.json",
+      "description": "Robustness test metrics (CORRECTED): Baseline MSE=0.008, Equivariant MSE=1.358 (~166x worse)",
+      "type": "results",
+      "step": "4"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/05_mnist_generators.py",
+      "description": "Generator estimation script for MNIST: computes J^A (490\u00d7490) and J^B (784\u00d7784) using finite differences",
+      "type": "script",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/06_mnist_solver.py",
+      "description": "Equivariant solver script: computes T_new (784\u00d7490) with \u03bb=0.5 regularization",
+      "type": "script",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/07_mnist_evaluation.py",
+      "description": "Evaluation script: tests rotation robustness of T_old vs T_new on MNIST test set",
+      "type": "script",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/mnist_generators.npz",
+      "description": "Computed generators J^A and J^B for MNIST (estimated from 1000 samples with \u03b5=0.01 rad)",
+      "type": "data",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/workflow/data/t_new_mnist.npy",
+      "description": "Equivariant transition matrix T_new (784\u00d7490) with symmetry constraints",
+      "type": "data",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/results/mnist_experiment.json",
+      "description": "MNIST rotation robustness results: Baseline outperforms equivariant (SSIM 0.168 vs 0.007)",
+      "type": "results",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_reconstruction_comparison.png",
+      "description": "Side-by-side reconstruction comparison on rotated MNIST images",
+      "type": "figure",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_difference_maps.png",
+      "description": "Pixel-wise error maps comparing baseline and equivariant reconstructions",
+      "type": "figure",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_boxplots.png",
+      "description": "Box plots showing distribution of SSIM and PSNR metrics",
+      "type": "figure",
+      "step": "5"
+    },
+    {
+      "file": "/app/sandbox/session_20260118_175817_da8f96a1d029/figures/mnist_robustness_vs_angle.png",
+      "description": "SSIM and PSNR metrics as function of rotation angle (-15\u00b0 to 15\u00b0)",
+      "type": "figure",
+      "step": "5"
+    }
+  ],
+  "verification": {
+    "step_1": {
+      "synthetic_matrices": {
+        "A_shape": [
+          15,
+          5
+        ],
+        "B_shape": [
+          15,
+          4
+        ],
+        "status": "verified"
+      },
+      "mnist_dataset": {
+        "train_shape": [
+          60000,
+          1,
+          28,
+          28
+        ],
+        "test_shape": [
+          10000,
+          1,
+          28,
+          28
+        ],
+        "status": "verified"
+      }
+    },
+    "step_2": {
+      "cnn_architecture": {
+        "input_shape": [
+          1,
+          28,
+          28
+        ],
+        "penultimate_features": 490,
+        "output_classes": 10,
+        "total_parameters": 5920,
+        "status": "verified"
+      },
+      "cnn_performance": {
+        "train_accuracy": 98.45,
+        "test_accuracy": 98.36,
+        "target_met": true,
+        "status": "verified"
+      },
+      "transition_matrix": {
+        "T_old_shape": [
+          784,
+          490
+        ],
+        "method": "pseudoinverse",
+        "status": "verified"
+      },
+      "reconstruction_metrics": {
+        "mse": 0.0683523416519165,
+        "ssim_mean": 0.1997578127523511,
+        "ssim_std": 0.07306928980826267,
+        "psnr_mean": 10.362197886158416,
+        "psnr_std": 0.788623735852451,
+        "status": "verified"
+      }
+    },
+    "step_3": {
+      "generator_estimation": {
+        "J_A_shape": [
+          5,
+          5
+        ],
+        "J_B_shape": [
+          4,
+          4
+        ],
+        "method": "bridge_mds",
+        "antisymmetry_verified": true,
+        "status": "verified"
+      },
+      "equivariant_solver": {
+        "T_new_shape": [
+          4,
+          5
+        ],
+        "lambda_reg": 0.5,
+        "iterations": 11,
+        "status": "verified"
+      },
+      "performance_comparison": {
+        "symmetry_defect_old": 17.40449,
+        "symmetry_defect_new": 2.204499,
+        "symmetry_improvement_pct": 98.4,
+        "objective_improvement_pct": 13.69,
+        "status": "verified"
+      },
+      "tests_passed": 5,
+      "tests_total": 5,
+      "success_rate": 1.0
+    },
+    "step_4": {
+      "bridge_reimplementation": {
+        "mds_stress": 2.6214,
+        "decoder_A_mse": 0.0368,
+        "decoder_B_mse": 1.5943,
+        "latent_dim": 2,
+        "status": "verified"
+      },
+      "rotation_experiment": {
+        "n_rotations": 15,
+        "rotation_range_deg": [
+          -15,
+          15
+        ],
+        "A_rot_shape": [
+          15,
+          5
+        ],
+        "B_rot_shape": [
+          15,
+          4
+        ],
+        "status": "verified"
+      },
+      "prediction_metrics": {
+        "mse_baseline": 0.00816,
+        "mse_equivariant": 1.35764,
+        "error_ratio": 166.4,
+        "pca_explained_variance": [
+          0.663,
+          0.235
+        ],
+        "status": "corrected"
+      },
+      "scientific_interpretation": {
+        "result": "Baseline outperforms equivariant on linearly-generated synthetic data",
+        "reason": "Linear data generation favors unconstrained linear models",
+        "correction_applied": true,
+        "status": "scientifically_valid"
+      },
+      "visualization": {
+        "figure": "synthetic_robustness.png",
+        "format": "png",
+        "dpi": 300,
+        "panels": 3,
+        "includes_ground_truth": true,
+        "status": "generated"
+      }
+    },
+    "step_5": {
+      "generator_estimation": {
+        "J_A_shape": [
+          490,
+          490
+        ],
+        "J_B_shape": [
+          784,
+          784
+        ],
+        "n_samples": 1000,
+        "epsilon_rad": 0.01,
+        "method": "finite_differences",
+        "status": "completed"
+      },
+      "equivariant_solver": {
+        "T_new_shape": [
+          784,
+          490
+        ],
+        "lambda_reg": 0.5,
+        "iterations": 1000,
+        "reconstruction_error": 0.098379,
+        "symmetry_defect": 4897.271859,
+        "status": "completed"
+      },
+      "rotation_robustness": {
+        "n_test_samples": 1000,
+        "rotation_angles": 15,
+        "angle_range_deg": [
+          -15,
+          15
+        ],
+        "status": "completed"
+      },
+      "performance_comparison": {
+        "baseline_ssim_mean": 0.168,
+        "baseline_psnr_mean": 12.0,
+        "baseline_mse_mean": 0.065353,
+        "equivariant_ssim_mean": 0.0073,
+        "equivariant_psnr_mean": 10.58,
+        "equivariant_mse_mean": 0.092118,
+        "status": "completed"
+      },
+      "scientific_interpretation": {
+        "result": "Baseline significantly outperforms equivariant on MNIST rotation robustness",
+        "ssim_ratio": 23.0,
+        "reason": "Finite-difference generators on nonlinear CNN features do not capture true rotational equivariance",
+        "validity": "Negative result demonstrates limitations of linear equivariance assumptions on deep neural network representations",
+        "status": "scientifically_valid"
+      }
+    }
+  }
+}

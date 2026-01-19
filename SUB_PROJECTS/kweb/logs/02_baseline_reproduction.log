@@ -1,0 +1,344 @@
+
+================================================================================
+BASELINE REPRODUCTION (OLD APPROACH)
+================================================================================
+Objective: Train CNN, compute T_old, and evaluate reconstruction
+================================================================================
+
+Using device: cpu
+
+================================================================================
+Step 1: Loading MNIST Data
+================================================================================
+Train data shape: (60000, 1, 28, 28)
+Train labels shape: (60000,)
+Test data shape: (10000, 1, 28, 28)
+Test labels shape: (10000,)
+Batch size: 128
+Train batches: 469
+Test batches: 79
+================================================================================
+
+================================================================================
+Step 2: Training CNN Model
+================================================================================
+Model architecture:
+MNISTCNN(
+  (conv1): Conv2d(1, 10, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (relu1): ReLU()
+  (pool1): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (conv2): Conv2d(10, 10, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (relu2): ReLU()
+  (pool2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (flatten): Flatten(start_dim=1, end_dim=-1)
+  (fc): Linear(in_features=490, out_features=10, bias=True)
+)
+
+================================================================================
+Training CNN on MNIST Dataset
+================================================================================
+  Epoch 1/10, Batch 50/469, Loss: 1.1527, Time: 0.1s
+  Epoch 1/10, Batch 100/469, Loss: 0.4440, Time: 0.2s
+  Epoch 1/10, Batch 150/469, Loss: 0.3166, Time: 0.3s
+  Epoch 1/10, Batch 200/469, Loss: 0.2886, Time: 0.4s
+  Epoch 1/10, Batch 250/469, Loss: 0.2559, Time: 0.6s
+  Epoch 1/10, Batch 300/469, Loss: 0.3159, Time: 0.7s
+  Epoch 1/10, Batch 350/469, Loss: 0.2053, Time: 0.8s
+  Epoch 1/10, Batch 400/469, Loss: 0.2685, Time: 0.9s
+  Epoch 1/10, Batch 450/469, Loss: 0.2017, Time: 1.0s
+
+Epoch 1/10 Summary:
+  Average Loss: 0.5026
+  Accuracy: 85.50%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 2/10, Batch 50/469, Loss: 0.2276, Time: 0.1s
+  Epoch 2/10, Batch 100/469, Loss: 0.1898, Time: 0.2s
+  Epoch 2/10, Batch 150/469, Loss: 0.1274, Time: 0.3s
+  Epoch 2/10, Batch 200/469, Loss: 0.1270, Time: 0.4s
+  Epoch 2/10, Batch 250/469, Loss: 0.1562, Time: 0.5s
+  Epoch 2/10, Batch 300/469, Loss: 0.0744, Time: 0.7s
+  Epoch 2/10, Batch 350/469, Loss: 0.1952, Time: 0.8s
+  Epoch 2/10, Batch 400/469, Loss: 0.0961, Time: 0.9s
+  Epoch 2/10, Batch 450/469, Loss: 0.1897, Time: 1.0s
+
+Epoch 2/10 Summary:
+  Average Loss: 0.1511
+  Accuracy: 95.54%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 3/10, Batch 50/469, Loss: 0.0718, Time: 0.1s
+  Epoch 3/10, Batch 100/469, Loss: 0.1251, Time: 0.2s
+  Epoch 3/10, Batch 150/469, Loss: 0.1074, Time: 0.3s
+  Epoch 3/10, Batch 200/469, Loss: 0.1493, Time: 0.4s
+  Epoch 3/10, Batch 250/469, Loss: 0.1139, Time: 0.5s
+  Epoch 3/10, Batch 300/469, Loss: 0.0523, Time: 0.7s
+  Epoch 3/10, Batch 350/469, Loss: 0.1043, Time: 0.8s
+  Epoch 3/10, Batch 400/469, Loss: 0.0407, Time: 0.9s
+  Epoch 3/10, Batch 450/469, Loss: 0.2327, Time: 1.0s
+
+Epoch 3/10 Summary:
+  Average Loss: 0.1063
+  Accuracy: 96.85%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 4/10, Batch 50/469, Loss: 0.1349, Time: 0.1s
+  Epoch 4/10, Batch 100/469, Loss: 0.1058, Time: 0.2s
+  Epoch 4/10, Batch 150/469, Loss: 0.0520, Time: 0.3s
+  Epoch 4/10, Batch 200/469, Loss: 0.1434, Time: 0.4s
+  Epoch 4/10, Batch 250/469, Loss: 0.0574, Time: 0.5s
+  Epoch 4/10, Batch 300/469, Loss: 0.1085, Time: 0.7s
+  Epoch 4/10, Batch 350/469, Loss: 0.1592, Time: 0.8s
+  Epoch 4/10, Batch 400/469, Loss: 0.1731, Time: 0.9s
+  Epoch 4/10, Batch 450/469, Loss: 0.0248, Time: 1.0s
+
+Epoch 4/10 Summary:
+  Average Loss: 0.0874
+  Accuracy: 97.39%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 5/10, Batch 50/469, Loss: 0.0946, Time: 0.1s
+  Epoch 5/10, Batch 100/469, Loss: 0.0203, Time: 0.2s
+  Epoch 5/10, Batch 150/469, Loss: 0.0545, Time: 0.3s
+  Epoch 5/10, Batch 200/469, Loss: 0.0416, Time: 0.4s
+  Epoch 5/10, Batch 250/469, Loss: 0.0311, Time: 0.5s
+  Epoch 5/10, Batch 300/469, Loss: 0.0486, Time: 0.7s
+  Epoch 5/10, Batch 350/469, Loss: 0.0182, Time: 0.8s
+  Epoch 5/10, Batch 400/469, Loss: 0.0736, Time: 0.9s
+  Epoch 5/10, Batch 450/469, Loss: 0.1103, Time: 1.0s
+
+Epoch 5/10 Summary:
+  Average Loss: 0.0763
+  Accuracy: 97.72%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 6/10, Batch 50/469, Loss: 0.0882, Time: 0.1s
+  Epoch 6/10, Batch 100/469, Loss: 0.0522, Time: 0.2s
+  Epoch 6/10, Batch 150/469, Loss: 0.0430, Time: 0.3s
+  Epoch 6/10, Batch 200/469, Loss: 0.1038, Time: 0.4s
+  Epoch 6/10, Batch 250/469, Loss: 0.0527, Time: 0.5s
+  Epoch 6/10, Batch 300/469, Loss: 0.0153, Time: 0.7s
+  Epoch 6/10, Batch 350/469, Loss: 0.0990, Time: 0.8s
+  Epoch 6/10, Batch 400/469, Loss: 0.0287, Time: 0.9s
+  Epoch 6/10, Batch 450/469, Loss: 0.0445, Time: 1.0s
+
+Epoch 6/10 Summary:
+  Average Loss: 0.0675
+  Accuracy: 98.03%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 7/10, Batch 50/469, Loss: 0.0597, Time: 0.1s
+  Epoch 7/10, Batch 100/469, Loss: 0.0705, Time: 0.2s
+  Epoch 7/10, Batch 150/469, Loss: 0.0569, Time: 0.3s
+  Epoch 7/10, Batch 200/469, Loss: 0.0344, Time: 0.4s
+  Epoch 7/10, Batch 250/469, Loss: 0.0708, Time: 0.5s
+  Epoch 7/10, Batch 300/469, Loss: 0.0548, Time: 0.7s
+  Epoch 7/10, Batch 350/469, Loss: 0.0165, Time: 0.8s
+  Epoch 7/10, Batch 400/469, Loss: 0.0989, Time: 0.9s
+  Epoch 7/10, Batch 450/469, Loss: 0.0451, Time: 1.0s
+
+Epoch 7/10 Summary:
+  Average Loss: 0.0630
+  Accuracy: 98.08%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 8/10, Batch 50/469, Loss: 0.0916, Time: 0.1s
+  Epoch 8/10, Batch 100/469, Loss: 0.0845, Time: 0.2s
+  Epoch 8/10, Batch 150/469, Loss: 0.0760, Time: 0.3s
+  Epoch 8/10, Batch 200/469, Loss: 0.0898, Time: 0.4s
+  Epoch 8/10, Batch 250/469, Loss: 0.0400, Time: 0.5s
+  Epoch 8/10, Batch 300/469, Loss: 0.0526, Time: 0.7s
+  Epoch 8/10, Batch 350/469, Loss: 0.0839, Time: 0.8s
+  Epoch 8/10, Batch 400/469, Loss: 0.1257, Time: 0.9s
+  Epoch 8/10, Batch 450/469, Loss: 0.0675, Time: 1.0s
+
+Epoch 8/10 Summary:
+  Average Loss: 0.0576
+  Accuracy: 98.26%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 9/10, Batch 50/469, Loss: 0.0136, Time: 0.1s
+  Epoch 9/10, Batch 100/469, Loss: 0.0296, Time: 0.2s
+  Epoch 9/10, Batch 150/469, Loss: 0.0690, Time: 0.3s
+  Epoch 9/10, Batch 200/469, Loss: 0.0377, Time: 0.4s
+  Epoch 9/10, Batch 250/469, Loss: 0.0768, Time: 0.5s
+  Epoch 9/10, Batch 300/469, Loss: 0.0114, Time: 0.7s
+  Epoch 9/10, Batch 350/469, Loss: 0.0222, Time: 0.8s
+  Epoch 9/10, Batch 400/469, Loss: 0.0308, Time: 0.9s
+  Epoch 9/10, Batch 450/469, Loss: 0.0822, Time: 1.0s
+
+Epoch 9/10 Summary:
+  Average Loss: 0.0540
+  Accuracy: 98.33%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+  Epoch 10/10, Batch 50/469, Loss: 0.0431, Time: 0.1s
+  Epoch 10/10, Batch 100/469, Loss: 0.0525, Time: 0.2s
+  Epoch 10/10, Batch 150/469, Loss: 0.0383, Time: 0.3s
+  Epoch 10/10, Batch 200/469, Loss: 0.1191, Time: 0.4s
+  Epoch 10/10, Batch 250/469, Loss: 0.1231, Time: 0.5s
+  Epoch 10/10, Batch 300/469, Loss: 0.0642, Time: 0.7s
+  Epoch 10/10, Batch 350/469, Loss: 0.0528, Time: 0.8s
+  Epoch 10/10, Batch 400/469, Loss: 0.0552, Time: 0.9s
+  Epoch 10/10, Batch 450/469, Loss: 0.0301, Time: 1.0s
+
+Epoch 10/10 Summary:
+  Average Loss: 0.0511
+  Accuracy: 98.45%
+  Time: 1.0s
+--------------------------------------------------------------------------------
+
+✓ Training completed!
+  Final Accuracy: 98.45%
+================================================================================
+
+================================================================================
+Evaluating CNN on Test Dataset
+================================================================================
+  Processed 20/79 batches...
+  Processed 40/79 batches...
+  Processed 60/79 batches...
+
+✓ Evaluation completed!
+  Test Accuracy: 98.36%
+================================================================================
+
+✓ Model saved to: workflow/data/cnn_mnist.pth
+✓ Target accuracy (>98%) achieved: 98.36%
+
+================================================================================
+Step 3: Extracting Formal Model Features (A)
+================================================================================
+
+================================================================================
+Extracting Penultimate Layer Features (Formal Model A)
+================================================================================
+  Processed 20/469 batches...
+  Processed 40/469 batches...
+  Processed 60/469 batches...
+  Processed 80/469 batches...
+  Processed 100/469 batches...
+  Processed 120/469 batches...
+  Processed 140/469 batches...
+  Processed 160/469 batches...
+  Processed 180/469 batches...
+  Processed 200/469 batches...
+  Processed 220/469 batches...
+  Processed 240/469 batches...
+  Processed 260/469 batches...
+  Processed 280/469 batches...
+  Processed 300/469 batches...
+  Processed 320/469 batches...
+  Processed 340/469 batches...
+  Processed 360/469 batches...
+  Processed 380/469 batches...
+  Processed 400/469 batches...
+  Processed 420/469 batches...
+  Processed 440/469 batches...
+  Processed 460/469 batches...
+
+✓ Feature extraction completed!
+  Features shape: (60000, 490)
+  Labels shape: (60000,)
+================================================================================
+
+================================================================================
+Extracting Penultimate Layer Features (Formal Model A)
+================================================================================
+  Processed 20/79 batches...
+  Processed 40/79 batches...
+  Processed 60/79 batches...
+
+✓ Feature extraction completed!
+  Features shape: (10000, 490)
+  Labels shape: (10000,)
+================================================================================
+
+A_train shape: (60000, 490)
+A_test shape: (10000, 490)
+
+================================================================================
+Step 4: Creating Mental Model Features (B)
+================================================================================
+
+================================================================================
+Creating Mental Model Features (Flattened Images B)
+================================================================================
+  Input shape: (60000, 1, 28, 28)
+  Flattened shape: (60000, 784)
+================================================================================
+
+================================================================================
+Creating Mental Model Features (Flattened Images B)
+================================================================================
+  Input shape: (10000, 1, 28, 28)
+  Flattened shape: (10000, 784)
+================================================================================
+
+B_train shape: (60000, 784)
+B_test shape: (10000, 784)
+
+================================================================================
+Step 5: Computing Transition Matrix T_old
+================================================================================
+Using training data (A_train, B_train)
+Computing transition matrix...
+  A shape: (60000, 490) (Formal Model features)
+  B shape: (60000, 784) (Mental Model features)
+  A pseudoinverse shape: (490, 60000)
+  T shape: (784, 490)
+
+✓ T_old saved to: workflow/data/t_old_mnist.npy
+  T_old shape: (784, 490)
+
+================================================================================
+Step 6: Evaluating Reconstruction on Test Set
+================================================================================
+Reconstructing mental features...
+  A shape: (10000, 490)
+  T shape: (784, 490)
+  B* shape: (10000, 784)
+
+Original B_test shape: (10000, 784)
+Reconstructed B*_test shape: (10000, 784)
+
+================================================================================
+Step 7: Calculating Reconstruction Metrics
+================================================================================
+Calculating reconstruction metrics...
+  Original shape: (10000, 784)
+  Reconstructed shape: (10000, 784)
+  MSE: 0.068352
+    Processed 1000/10000 images...
+    Processed 2000/10000 images...
+    Processed 3000/10000 images...
+    Processed 4000/10000 images...
+    Processed 5000/10000 images...
+    Processed 6000/10000 images...
+    Processed 7000/10000 images...
+    Processed 8000/10000 images...
+    Processed 9000/10000 images...
+    Processed 10000/10000 images...
+  SSIM: 0.199758 ± 0.073069
+  PSNR: 10.36 ± 0.79 dB
+
+✓ Metrics saved to: results/baseline_metrics.json
+
+================================================================================
+BASELINE REPRODUCTION SUMMARY
+================================================================================
+CNN Test Accuracy: 98.36%
+T_old shape: (784, 490)
+
+Reconstruction Metrics:
+  MSE: 0.068352
+  SSIM: 0.199758 ± 0.073069
+  PSNR: 10.36 ± 0.79 dB
+
+Output Files:
+  - workflow/data/cnn_mnist.pth
+  - workflow/data/t_old_mnist.npy
+  - results/baseline_metrics.json
+================================================================================
+
+✓ Baseline reproduction completed successfully!

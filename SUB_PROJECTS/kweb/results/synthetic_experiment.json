@@ -1,0 +1,78 @@
+{
+  "experiment": "synthetic_robustness_test_corrected",
+  "description": "Robustness test on rotated synthetic data - CORRECTED INTERPRETATION",
+  "data": {
+    "n_samples": 15,
+    "d_A": 5,
+    "d_B": 4,
+    "n_rotations": 15,
+    "rotation_range_degrees": [
+      -15,
+      15
+    ]
+  },
+  "bridge": {
+    "mds_stress": 2.6213771695469372,
+    "decoder_A_mse": 0.03683106790602884,
+    "decoder_B_mse": 1.59431422576626
+  },
+  "metrics": {
+    "mse_baseline": 0.00816006655288201,
+    "mse_equivariant": 1.3576386909741336,
+    "error_increase": 1.3494786244212515,
+    "error_ratio": 166.37593360003132
+  },
+  "per_sample_mse": {
+    "baseline": [
+      0.001709981356981707,
+      1.674220833020185e-05,
+      0.00133282436906397,
+      0.0039057786436295823,
+      0.014083396639755554,
+      0.004079814374846573,
+      0.006870154118426854,
+      0.0131829632651052,
+      0.020920402926590413,
+      0.031161460800914306,
+      0.0005573429799363848,
+      0.00940045797494714,
+      0.00955561176366396,
+      0.00248057415363012,
+      0.003143492717408195
+    ],
+    "equivariant": [
+      1.6237688914628565,
+      1.4775793472873113,
+      1.7976468542340143,
+      2.1456094786036735,
+      2.8906462370048924,
+      0.40340221899049855,
+      0.4111753262752577,
+      0.602736066855289,
+      0.9664109753552883,
+      1.4808854095313897,
+      0.7604366102735783,
+      1.5247787702453466,
+      1.6156637099769426,
+      1.2533239829331837,
+      1.410516485582481
+    ]
+  },
+  "pca_explained_variance": [
+    0.662891016091084,
+    0.23455860975428255
+  ],
+  "scientific_interpretation": {
+    "result": "Baseline OUTPERFORMS equivariant method on this synthetic task",
+    "evidence": "Baseline MSE = 0.0082, Equivariant MSE = 1.3576 (166.4x worse)",
+    "explanation": "The synthetic data generation uses LINEAR decoders from MDS coordinates, creating a perfect linear relationship B_rot \u2248 A_rot * W. The baseline (unconstrained linear regression) easily captures this. The equivariant method imposes rotation symmetry constraints that do NOT exist in the linearly-generated data, causing it to fail.",
+    "visualization": "Ground truth added to show baseline matches target pattern, while equivariant does not",
+    "conclusion": "This result validates that the experiment setup itself favors unconstrained linear models. For real-world data with actual rotational structure, equivariant method may perform better."
+  },
+  "limitations": [
+    "Synthetic data generation is inherently linear, which favors baseline",
+    "Ground truth B_rot generated via same linear decoder mechanism",
+    "Does not test actual rotational equivariance in natural data",
+    "Results are specific to this synthetic setup and may not generalize"
+  ]
+}
