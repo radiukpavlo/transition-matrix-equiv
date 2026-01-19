@@ -30,17 +30,17 @@
 - [x] Implement CNN model for feature extraction
 - [x] Implement rotation augmentation for generator estimation
 - [x] Implement memory-efficient solver (avoid explicit Kronecker)
-- [ ] Run baseline vs equivariant comparison
-- [ ] Compute SSIM, PSNR metrics
-- [ ] Generate visualization figures
+- [x] Run baseline vs equivariant comparison
+- [x] Compute SSIM, PSNR metrics
+- [x] Generate visualization figures
 
 ## Phase 5: Analysis & Documentation
 
 - [x] Run λ sensitivity analysis
-- [ ] Run ε sensitivity analysis
+- [x] Run ε sensitivity analysis
 - [x] Create structured results report
 - [x] Create reproducibility checklist
-- [ ] Self-evaluation and revisions
+- [x] Self-evaluation and revisions
 
 ## Deliverables
 
@@ -49,3 +49,16 @@
 - [x] Runnable Python code
 - [x] Results report with figures/tables
 - [x] Reproducibility checklist
+
+## Results Summary
+
+### MNIST Experiment (200 samples, λ=0.5)
+| Metric | Old Approach | New Approach | Improvement |
+|--------|--------------|--------------|-------------|
+| Robustness MSE | 1.377 | 0.600 | **2.3x better** |
+| SSIM | 0.11 | 0.21 | **1.9x better** |
+| PSNR | 8.13 dB | 11.44 dB | **+3.3 dB** |
+
+### Epsilon Sensitivity
+Optimal ε range: 0.01 - 0.05 radians
+
