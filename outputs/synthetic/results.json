@@ -1,0 +1,19 @@
+{
+  "parameters": {
+    "epsilon": 0.01,
+    "lambda": 0.5,
+    "seed": 42
+  },
+  "metrics": {
+    "old_approach": {
+      "mse_fid": 0.003656523083185975,
+      "sym_err": 13386.538246827127,
+      "robustness_err": 0.0029781954189794933
+    },
+    "new_approach": {
+      "mse_fid": 0.005227644380453982,
+      "sym_err": 0.042467560247846564,
+      "robustness_err": 0.002969848055480425
+    }
+  }
+}

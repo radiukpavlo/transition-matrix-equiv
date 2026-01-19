@@ -16,6 +16,9 @@ import torch.optim as optim
 import numpy as np
 import sys
 import os
+import json
+import logging
+import datetime
 from pathlib import Path
 import matplotlib.pyplot as plt
 
@@ -34,9 +37,11 @@ from experiments.mnist.features import (
     get_mnist_data, extract_features, get_rotated_features
 )
 
+logger = logging.getLogger(__name__)
+
 def train_model(model, train_loader, device='cpu', epochs=1):
     """Simple training loop to ensure meaningful features."""
-    print(f"Training model for {epochs} epochs...")
+    logger.info(f"Training model for {epochs} epochs...")
     model.train()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
@@ -52,7 +57,32 @@ def train_model(model, train_loader, device='cpu', epochs=1):
             optimizer.step()
             total_loss += loss.item()
             if batch_idx % 100 == 0:
-                print(f"Epoch {epoch}: Batch {batch_idx}/{len(train_loader)} Loss: {loss.item():.4f}")
+                logger.info(f"Epoch {epoch}: Batch {batch_idx}/{len(train_loader)} Loss: {loss.item():.4f}")
+
+def setup_logging(output_dir: Path):
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = output_dir / f"run_{timestamp}.log"
+    
+    root_logger = logging.getLogger()
+    # Reset handlers
+    root_logger.handlers = []
+    root_logger.setLevel(logging.INFO)
+    
+    formatter = logging.Formatter('%(message)s')
+    
+    # File handler
+    fh = logging.FileHandler(log_file)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(formatter)
+    root_logger.addHandler(fh)
+    
+    # Console handler
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(formatter)
+    root_logger.addHandler(ch)
+    
+    logging.info(f"Logging initialized. Output to {log_file}")
 
 def run_mnist_experiment(
     n_samples: int = 1000,
@@ -62,7 +92,13 @@ def run_mnist_experiment(
     seed: int = 42,
     device: str = 'cpu'
 ):
-    print(f"Running MNIST Experiment with n={n_samples}, lambda={lambda_}...")
+    # Setup outputs
+    output_dir = Path(__file__).parent.parent.parent / 'outputs' / 'mnist'
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    setup_logging(output_dir)
+    
+    logger.info(f"Running MNIST Experiment with n={n_samples}, lambda={lambda_}...")
     torch.manual_seed(seed)
     np.random.seed(seed)
     
@@ -78,18 +114,17 @@ def run_mnist_experiment(
     
     # 2. Extract Features (Training Set Subset)
     # We use these to solve for T
-    print("Extracting features...")
+    logger.info("Extracting features...")
     A_train, B_train, labels_train = extract_features(
         model, train_data, num_samples=n_samples, device=device
     )
-    print(f"Features shape: A={A_train.shape}, B={B_train.shape}")
+    logger.info(f"Features shape: A={A_train.shape}, B={B_train.shape}")
     
     # 3. Estimate Generators
     # Use the same subset (indices 0..n_samples-1)
-    indices = np.arange(n_samples) # effectively since we took first n samples from subset
+    indices = np.arange(n_samples) 
     # But extract_features with num_samples does a random choice with seed 42.
     # To be consistent for Rotation, we need the exact same images.
-    # Let's rely on extract_features returning what we need, but for rotation we need dataset access.
     # Refactoring slightly: extract_features uses random choice internally.
     # Let's re-implement indices selection here to be explicit.
     
@@ -99,7 +134,7 @@ def run_mnist_experiment(
     # Note: features.py/extract_features uses seed 42 internally so it should be deterministic
     # We need the indices for get_rotated_features
     
-    print("Estimating generators via rotation...")
+    logger.info("Estimating generators via rotation...")
     A_rot, B_rot = get_rotated_features(
         model, train_data, dataset_indices, angle_rad=epsilon, device=device
     )
@@ -109,28 +144,24 @@ def run_mnist_experiment(
     J_A = estimate_generator(A_train, A_rot, epsilon)
     J_B = estimate_generator(B_train, B_rot, epsilon)
     
-    print(f"Generators estimated. J_A: {J_A.shape}, J_B: {J_B.shape}")
+    logger.info(f"Generators estimated. J_A: {J_A.shape}, J_B: {J_B.shape}")
     
     # 4. Compute Transition Matrices
     
     # Baseline
-    print("Computing Baseline T_old...")
+    logger.info("Computing Baseline T_old...")
     T_old = compute_baseline_T(A_train, B_train)
     
     # Equivariant
-    print("Computing Equivariant T_new (Iterative LSQR)...")
-    # This uses the memory-efficient solver automatically if needed
-    # But for n=1000, 490*784 is big enough to prefer iterative usually?
-    # 1000 * 784 * 490 float64 is ~3GB. Explicit matrix M is huge.
-    # compute_equivariant_T_iterative is mandatory.
+    logger.info("Computing Equivariant T_new (Iterative LSQR)...")
     
     T_new, info = compute_equivariant_T_iterative(
-        A_train, B_train, J_A, J_B, lambda_=lambda_, show=True
+        A_train, B_train, J_A, J_B, lambda_=lambda_, show=False
     )
-    print(f"LSQR Info: {info['iterations']} iterations, residual: {info['residual_norm']:.4e}")
+    logger.info(f"LSQR Info: {info['iterations']} iterations, residual: {info['residual_norm']:.4e}")
     
     # 5. Evaluation metrics on TRAIN
-    print("\n--- Training Evaluation ---")
+    logger.info("\n--- Training Evaluation ---")
     B_pred_old = predict_mm_features(A_train, T_old)
     B_pred_new = predict_mm_features(A_train, T_new)
     
@@ -140,11 +171,11 @@ def run_mnist_experiment(
     mse_new = fidelity_mse(B_train, B_pred_new)
     sym_new = symmetry_defect(T_new, J_A, J_B)
     
-    print(f"Old: MSE={mse_old:.6f}, SymDefect={sym_old:.6f}")
-    print(f"New: MSE={mse_new:.6f}, SymDefect={sym_new:.6f}")
+    logger.info(f"Old: MSE={mse_old:.6f}, SymDefect={sym_old:.6f}")
+    logger.info(f"New: MSE={mse_new:.6f}, SymDefect={sym_new:.6f}")
     
     # 6. Robustness Test (on TEST set)
-    print("\n--- Robustness Test (Rotated Test Set) ---")
+    logger.info("\n--- Robustness Test (Rotated Test Set) ---")
     n_test = 200 # smaller for speed
     test_indices = np.random.RandomState(99).choice(len(test_data), n_test, replace=False)
     
@@ -167,7 +198,7 @@ def run_mnist_experiment(
     rob_old = robustness_error(B_test_target_rot, B_pred_old_rot)
     rob_new = robustness_error(B_test_target_rot, B_pred_new_rot)
     
-    print(f"Robustness MSE (30 deg): Old={rob_old:.6f}, New={rob_new:.6f}")
+    logger.info(f"Robustness MSE (30 deg): Old={rob_old:.6f}, New={rob_new:.6f}")
     
     # SSIM/PSNR on reconstruction
     metrics_old = compute_reconstruction_metrics(
@@ -177,17 +208,38 @@ def run_mnist_experiment(
         B_test_target_rot, B_pred_new_rot, image_shape=(28,28)
     )
     
-    print(f"SSIM: Old={metrics_old['ssim_mean']:.4f}, New={metrics_new['ssim_mean']:.4f}")
-    print(f"PSNR: Old={metrics_old['psnr_mean']:.2f}, New={metrics_new['psnr_mean']:.2f}")
+    logger.info(f"SSIM: Old={metrics_old['ssim_mean']:.4f}, New={metrics_new['ssim_mean']:.4f}")
+    logger.info(f"PSNR: Old={metrics_old['psnr_mean']:.2f}, New={metrics_new['psnr_mean']:.2f}")
 
     # Save results
     results = {
-        'train_mse_old': mse_old, 'train_mse_new': mse_new,
-        'sym_old': sym_old, 'sym_new': sym_new,
-        'rob_old': rob_old, 'rob_new': rob_new,
-        'ssim_old': metrics_old['ssim_mean'], 'ssim_new': metrics_new['ssim_mean'],
-        'n_samples': n_samples, 'lambda': lambda_
+        'parameters': {
+             'n_samples': n_samples,
+             'lambda': lambda_,
+             'epsilon': epsilon,
+             'epochs': epochs,
+             'seed': seed,
+             'device': device
+        },
+        'metrics': {
+            'train_mse_old': float(mse_old),
+            'train_mse_new': float(mse_new),
+            'sym_old': float(sym_old),
+            'sym_new': float(sym_new),
+            'rob_old': float(rob_old),
+            'rob_new': float(rob_new),
+            'ssim_old': float(metrics_old['ssim_mean']),
+            'ssim_new': float(metrics_new['ssim_mean']),
+            'psnr_old': float(metrics_old['psnr_mean']),
+            'psnr_new': float(metrics_new['psnr_mean'])
+        }
     }
+    
+    with open(output_dir / 'results.json', 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    logger.info(f"Results saved to {output_dir}")
+    
     return results
 
 if __name__ == "__main__":

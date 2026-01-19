@@ -1,0 +1,30 @@
+Logging initialized. Output to D:\GitHub\transition-matrix-equiv\outputs\mnist\run_20260119_211729.log
+Running MNIST Experiment with n=1000, lambda=0.5...
+Training model for 1 epochs...
+Epoch 0: Batch 0/938 Loss: 2.3032
+Epoch 0: Batch 100/938 Loss: 0.1784
+Epoch 0: Batch 200/938 Loss: 0.0317
+Epoch 0: Batch 300/938 Loss: 0.0711
+Epoch 0: Batch 400/938 Loss: 0.0485
+Epoch 0: Batch 500/938 Loss: 0.2038
+Epoch 0: Batch 600/938 Loss: 0.0650
+Epoch 0: Batch 700/938 Loss: 0.0546
+Epoch 0: Batch 800/938 Loss: 0.0205
+Epoch 0: Batch 900/938 Loss: 0.1134
+Extracting features...
+Features shape: A=(1000, 490), B=(1000, 784)
+Estimating generators via rotation...
+Generators estimated. J_A: (490, 490), J_B: (784, 784)
+Computing Baseline T_old...
+Computing Equivariant T_new (Iterative LSQR)...
+LSQR Info: 500 iterations, residual: 4.3366e+02
+
+--- Training Evaluation ---
+Old: MSE=0.152744, SymDefect=419725920.000000
+New: MSE=0.210771, SymDefect=91275.130800
+
+--- Robustness Test (Rotated Test Set) ---
+Robustness MSE (30 deg): Old=0.661958, New=0.427664
+SSIM: Old=0.2565, New=0.3442
+PSNR: Old=11.32, New=13.02
+Results saved to D:\GitHub\transition-matrix-equiv\outputs\mnist

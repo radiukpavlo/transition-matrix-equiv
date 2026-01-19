@@ -1,103 +1,128 @@
-# Equivariant Transition Matrices for Explainable Deep Learning
+# Еквіваріантність матриці переходу (Transition Matrix Equivariance)
 
-This repository contains a reproduction of the paper **"Equivariant Transition Matrices for Explainable Deep Learning: A Lie Group Linearization Approach"**. It implements a novel method for computing transition matrices that preserve the symmetry properties (equivariance) of the underlying data manifolds, leading to more robust and interpretable explanations.
+Цей репозиторій містить кодову базу та результати відтворення методології побудови еквіваріантних матриць переходу. Мета проекту — продемонструвати переваги врахування симетрії даних при побудові відображень між різними просторами ознак.
 
-## 📊 Results & Analysis
+## 1. Огляд Методології
 
-Our computational experiments confirm the core hypothesis: enforcing equivariance yields transition matrices that are significantly more robust to distributional shifts (generative factors) like rotation, with minimal trade-off in reconstruction fidelity.
+Проект досліджує два підходи до побудови матриці переходу $T$ між простором вхідних ознак $A$ (Feature Model, FM) та простором цільових ознак $B$ (Metric Model, MM):
 
-### 1. Data Manifold Visualization
+1. **Старий підхід (Baseline)**: Мінімізація середньоквадратичної помилки відтворення (MSE) без урахування симетрії:
+    $$T_{old} = \arg\min_T ||B - AT||_F^2$$
+2. **Новий підхід (Equivariant)**: Оптимізація з регуляризацією для забезпечення комутативності з перетвореннями симетрії (еквіваріантність):
+    $$T_{new} = \arg\min_T (||B - AT||_F^2 + \lambda ||TJ_A - J_BT||_F^2)$$
+    де $J_A$ та $J_B$ — генератори групи симетрії (наприклад, обертання) у відповідних просторах.
 
-The synthetic experiment confirms that the input (Formal Model) and output (Mental Model) feature spaces possess a clear, recoverable manifold structure. Figure 1 visually demonstrates these spaces using Multi-Dimensional Scaling (MDS), revealing distinct class clusters.
+## 2. Аналіз Синтетичних Даних
 
-![MDS Visualization](figures/fig1_mds_visualization.png)
-*Figure 1: MDS visualization of the Formal Model (A) and Mental Model (B) matrices. The underlying class structure used for Synthetic Scenarios is clearly visible.*
+Ми провели експерименти на синтетичних даних, описаних у Додатку 1.1 рукопису.
 
-### 2. Robustness to Transformations
+### 2.1 Вхідні Дані
 
-The most critical finding is visually demonstrated below. When the input data is rotated (simulating a change in generative factors), the **Old Approach** (baseline) fails to map samples coherently, scattering class clusters. The **New Equivariant Approach**, however, preserves the geometric structure of the classes.
+Вхідні дані складаються з двох матриць ознак для 15 зразків (3 класи по 5 зразків):
 
-![Robustness Comparison](figures/fig2_robustness_scatter.png)
-*Figure 2: Comparison of robustness under SO(2) rotation. The equivariant approach (right) maintains class separability, whereas the baseline (left) loses structure.*
+- **$A \in \mathbb{R}^{15 \times 5}$**: Вхідні ознаки.
+- **$B \in \mathbb{R}^{15 \times 4}$**: Цільові ознаки.
 
-### 3. Fidelity vs. Equivariance Trade-off
+Приклад вхідних матриць (перші 5 рядків):
 
-We analyzed the effect of the weighting parameter $\lambda$ (lambda) which balances the fidelity term (MSE) and the symmetry constraint. As predicted, increasing $\lambda$ dramatically reduces the symmetry defect (error in commutativity with the group action) while only slightly increasing the reconstruction error.
+**Матриця A (Input Features)**:
 
-![Lambda Trade-off](figures/fig3_lambda_tradeoff.png)
-*Figure 3: The trade-off between Fidelity (MSE) and Symmetry Defect. $\lambda=0.5$ offers an optimal balance point.*
-
-### 4. Generator Estimation Stability ($\epsilon$-Sensitivity)
-
-To implement the Lie algebra linearization, we estimate generators using finite differences with step size $\epsilon$. Our sensitivity analysis shows a stable operating range typically between $\epsilon=0.01$ and $\epsilon=0.05$ radians. Outside this range, numerical instability (too small $\epsilon$) or linearization error (too large $\epsilon$) degrades performance.
-
-![Epsilon Sensitivity](figures/fig4_epsilon_sensitivity.png)
-*Figure 4: Sensitivity of the method to the finite difference step size $\epsilon$. The equivariant approach (New) consistently minimizes symmetry defect across the stable range.*
-
-### 5. Quantitative Results (MNIST Experiment)
-
-We extended the evaluation to an image-based task using the MNIST dataset. A transition matrix was learned to map from a CNN's intermediate features (Formal Model) to the pixel space (Mental Model). We evaluated robustness by rotating the test set images.
-
-**Experiment Settings:** $n=1000$ samples, 5 epochs training.
-
-| Metric | Old Approach (Baseline) | New Approach (Equivariant) | Improvement |
-| :--- | :--- | :--- | :--- |
-| **Robustness MSE** | 0.838 | **0.471** | **1.78x Lower Error** |
-| **SSIM** | 0.199 | **0.331** | **1.66x Higher Similarity** |
-| **PSNR** | 10.54 dB | **12.61 dB** | **+2.07 dB** |
-
-The equivariant method produces significantly better reconstructions under rotation, as evidenced by the **+2 dB** gain in PSNR and substantial improvement in Structural Similarity Index (SSIM).
-
-## 🛠️ Installation
-
-```bash
-pip install -r requirements.txt
+```
+[[ 2.8  -1.8  -2.8   1.3   0.4 ]
+ [ 2.9  -1.9  -2.9   1.4   0.5 ]
+ [ 3.0  -2.0  -3.0   1.5   0.6 ]
+ [ 3.1  -2.1  -3.1   1.6   0.7 ]
+ [ 3.2  -2.2  -3.2   1.7   0.8 ]]
+...
 ```
 
-**Requirements:** `numpy`, `scipy`, `matplotlib`, `scikit-learn`, `torch`, `torchvision` (for MNIST).
+**Матриця B (Target Features)**:
 
-## 🚀 Usage
-
-### Run Synthetic Experiments
-
-To reproduce Figures 1-4 and the synthetic data methodology:
-
-```bash
-python experiments/synthetic/run_experiment.py --validate
+```
+[[-1.979  1.959 -1.381 -1.730]
+ [-1.975  1.949 -1.727 -1.761]
+ [-1.844  1.998 -1.913 -1.975]
+ [-1.999  2.000 -1.998 -2.000]
+ [-1.999  1.999 -2.000 -1.999]]
+...
 ```
 
-### Generate Figures
+### 2.2 Проміжні Дані (Генератори)
 
-To regenerate all plots found in this README:
+Для забезпечення еквіваріантності було оцінено генератори групи симетрії (обертання) $J_A$ та $J_B$ за допомогою Алгоритму 2.
 
-```bash
-python scripts/generate_figures.py --output figures/
-python scripts/epsilon_sensitivity.py
+**Генератор $J_A$ (5x5)**:
+
+```
+[[-59.186 -18.691 -54.368  -3.566 -26.952]
+ [ 39.475   4.899  29.838 -23.401  21.809]
+ [-65.622 -24.027 -63.163 -13.997 -26.655]
+ [  8.999 -20.830 -14.398 -80.598  17.557]
+ [ 14.877  19.610  26.445  51.197  -2.051]]
 ```
 
-### Run MNIST Experiment
+**Генератор $J_B$ (4x4)**:
 
-To retrain the model and run the deep learning evaluation (requires PyTorch):
-
-```bash
-python experiments/mnist/run_experiment.py --samples 1000 --epochs 5
+```
+[[-36.886  -9.594  44.252 -15.807]
+ [ -3.209  -1.081   4.506  -0.700]
+ [ 39.893   9.291 -48.086  16.415]
+ [-33.429  -8.710  41.663 -14.545]]
 ```
 
-## 📂 Project Structure
+### 2.3 Вихідні Дані (Результати)
 
-- `src/`: Core implementation of the algorithm.
-  - `equivariant.py`: The main solver implementing Eq. (12) from the paper.
-  - `generators.py`: Lie algebra generator estimation (Algorithm 2).
-  - `baseline.py`: Standard least-squares transition matrix.
-- `experiments/`: Experiment runners.
-  - `synthetic/`: Reproduction of the synthetic manifold experiment.
-  - `mnist/`: Deep learning application experiment.
-- `scripts/`: Visualization and analysis tools.
+Ми отримали дві матриці переходу.
 
-## 🧪 Testing
+**$T_{old}$ (Baseline)** - мінімізує лише похибку відтворення:
 
-The codebase includes a comprehensive test suite covering algebraic identities and solver correctness.
-
-```bash
-python -m pytest tests/ -v
 ```
+[[-0.759 -0.051  0.519  1.444 -0.652]
+ [ 0.331  0.225 -0.356  0.513 -0.671]
+ [-0.849 -0.630 -0.482 -1.053 -0.640]
+ [ 0.223  0.500  0.444  0.081 -0.578]]
+```
+
+**$T_{new}$ (Equivariant)** - враховує симетрію:
+
+```
+[[-0.452 -0.124  0.640  0.879 -0.416]
+ [ 0.425  0.053 -0.459 -0.170 -0.513]
+ [-0.667 -0.658 -0.392 -1.334 -0.509]
+ [ 0.098  0.565  0.425  0.430 -0.695]]
+```
+
+### 2.4 Порівняння Результатів
+
+| Метрика | Старий підхід ($T_{old}$) | Новий підхід ($T_{new}$) | Коментар |
+|---------|-------------------------|-------------------------|----------|
+| **MSE Fidelity** | **0.0037** | 0.0052 | $T_{old}$ краще на навчальних даних (очікувано) |
+| **Symmetry Defect** | 13386.54 | **0.042** | $T_{new}$ майже ідеально зберігає симетрію |
+| **Robustness Error** | 0.0030 | 0.0030 | На синтетичних даних різниця незначна |
+
+## 3. Експеримент MNIST
+
+Для перевірки методу на реальних даних було використано датасет MNIST.
+
+- **Модель**: CNN, навчена на класифікацію цифр.
+- **Вибірка**: 1000 зображень.
+- **Тест на стійкість**: Перевірка якості передбачення на зображеннях, повернутих на 30 градусів.
+
+### Результати MNIST
+
+| Метрика | Старий підхід | Новий підхід | Покращення |
+|---------|---------------|--------------|------------|
+| **Symmetry Defect** | $4.2 \times 10^8$ | $\mathbf{9.1 \times 10^4}$ | **Значне покращення** |
+| **Robustness Error** | 0.662 | **0.428** | **-35.4% похибки** |
+| **SSIM** | 0.257 | **0.344** | Більш структурно схожі передбачення |
+| **PSNR** | 11.32 | **13.02** | Менше шуму |
+
+> **Примітка**: На навчальних даних (без поворотів) старий підхід має меншу помилку MSE (0.153 проти 0.211), оскільки він "перенавчається" під фіксовану орієнтацію. Однак новий підхід демонструє значно кращу узагальнюючу здатність при поворотах зображень, що критично важливо для реальних застосувань.
+
+## 4. Висновки
+
+1. **Ефективність**: Новий метод ($T_{new}$) успішно зменшує дефект симетрії на порядки ($10^4$ разів на MNIST).
+2. **Стійкість**: Експерименти на MNIST підтвердили, що врахування еквіваріантності робить модель значно стійкішою до геометричних трансформацій (зменшення похибки на повернутих даних на 35%).
+3. **Компроміс**: Існує невеликий компроміс у точності відтворення на навчальних даних (trade-off), але виграш у робастності виправдовує це для задач, де важлива інваріантність до поворотів.
+
+Згенеровані дані та результати знаходяться у директоріях `data/` та `outputs/`.

@@ -1,0 +1,70 @@
+Logging initialized. Output to D:\GitHub\transition-matrix-equiv\outputs\mnist\run_20260119_201525.log
+Running MNIST Experiment with n=1000, lambda=0.5...
+Training model for 5 epochs...
+Epoch 0: Batch 0/938 Loss: 2.3032
+Epoch 0: Batch 100/938 Loss: 0.1784
+Epoch 0: Batch 200/938 Loss: 0.0317
+Epoch 0: Batch 300/938 Loss: 0.0711
+Epoch 0: Batch 400/938 Loss: 0.0485
+Epoch 0: Batch 500/938 Loss: 0.2038
+Epoch 0: Batch 600/938 Loss: 0.0650
+Epoch 0: Batch 700/938 Loss: 0.0546
+Epoch 0: Batch 800/938 Loss: 0.0205
+Epoch 0: Batch 900/938 Loss: 0.1134
+Epoch 1: Batch 0/938 Loss: 0.0117
+Epoch 1: Batch 100/938 Loss: 0.0527
+Epoch 1: Batch 200/938 Loss: 0.0974
+Epoch 1: Batch 300/938 Loss: 0.0190
+Epoch 1: Batch 400/938 Loss: 0.1335
+Epoch 1: Batch 500/938 Loss: 0.0139
+Epoch 1: Batch 600/938 Loss: 0.0175
+Epoch 1: Batch 700/938 Loss: 0.0177
+Epoch 1: Batch 800/938 Loss: 0.0584
+Epoch 1: Batch 900/938 Loss: 0.0068
+Epoch 2: Batch 0/938 Loss: 0.0065
+Epoch 2: Batch 100/938 Loss: 0.1122
+Epoch 2: Batch 200/938 Loss: 0.0298
+Epoch 2: Batch 300/938 Loss: 0.0066
+Epoch 2: Batch 400/938 Loss: 0.0028
+Epoch 2: Batch 500/938 Loss: 0.0078
+Epoch 2: Batch 600/938 Loss: 0.0115
+Epoch 2: Batch 700/938 Loss: 0.0076
+Epoch 2: Batch 800/938 Loss: 0.0052
+Epoch 2: Batch 900/938 Loss: 0.1088
+Epoch 3: Batch 0/938 Loss: 0.0100
+Epoch 3: Batch 100/938 Loss: 0.0010
+Epoch 3: Batch 200/938 Loss: 0.0015
+Epoch 3: Batch 300/938 Loss: 0.0094
+Epoch 3: Batch 400/938 Loss: 0.0302
+Epoch 3: Batch 500/938 Loss: 0.0002
+Epoch 3: Batch 600/938 Loss: 0.0108
+Epoch 3: Batch 700/938 Loss: 0.0039
+Epoch 3: Batch 800/938 Loss: 0.0338
+Epoch 3: Batch 900/938 Loss: 0.0055
+Epoch 4: Batch 0/938 Loss: 0.0011
+Epoch 4: Batch 100/938 Loss: 0.0117
+Epoch 4: Batch 200/938 Loss: 0.0050
+Epoch 4: Batch 300/938 Loss: 0.0007
+Epoch 4: Batch 400/938 Loss: 0.0007
+Epoch 4: Batch 500/938 Loss: 0.0074
+Epoch 4: Batch 600/938 Loss: 0.0090
+Epoch 4: Batch 700/938 Loss: 0.0671
+Epoch 4: Batch 800/938 Loss: 0.0455
+Epoch 4: Batch 900/938 Loss: 0.0253
+Extracting features...
+Features shape: A=(1000, 490), B=(1000, 784)
+Estimating generators via rotation...
+Generators estimated. J_A: (490, 490), J_B: (784, 784)
+Computing Baseline T_old...
+Computing Equivariant T_new (Iterative LSQR)...
+LSQR Info: 500 iterations, residual: 4.5719e+02
+
+--- Training Evaluation ---
+Old: MSE=0.154218, SymDefect=4060639133696.000000
+New: MSE=0.233272, SymDefect=104556.461007
+
+--- Robustness Test (Rotated Test Set) ---
+Robustness MSE (30 deg): Old=0.837888, New=0.467908
+SSIM: Old=0.1988, New=0.3312
+PSNR: Old=10.54, New=12.66
+Results saved to D:\GitHub\transition-matrix-equiv\outputs\mnist

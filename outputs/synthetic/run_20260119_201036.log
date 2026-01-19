@@ -1,0 +1,70 @@
+Logging initialized. Output to D:\GitHub\transition-matrix-equiv\outputs\synthetic\run_20260119_201036.log
+
+######################################################################
+# SYNTHETIC EXPERIMENT (Section 3.4)                                #
+######################################################################
+
+Parameters:
+  epsilon = 0.01 rad
+  lambda = 0.5
+  Random seed = 42
+
+Data dimensions:
+  A: (15, 5) (FM features)
+  B: (15, 4) (MM features)
+  Samples: 15, Classes: 3
+
+------------------------------------------------------------
+Estimating Lie algebra generators (Algorithm 2)
+------------------------------------------------------------
+J_A shape: (5, 5)
+J_B shape: (4, 4)
+
+============================================================
+SCENARIO 1: Old Approach (Static Transition Matrix)
+============================================================
+
+T_old shape: (4, 5)
+MSE (fidelity): 0.003657
+Symmetry defect: 13386.538247
+
+Expected from manuscript:
+  MSE: 0.002
+  Sym_err: 1.45
+
+============================================================
+SCENARIO 2: New Approach (Equivariant, lambda=0.5)
+============================================================
+
+T_new shape: (4, 5)
+MSE (fidelity): 0.005228
+Symmetry defect: 0.042468
+
+Expected from manuscript:
+  MSE: 0.005
+  Sym_err: 0.08
+
+============================================================
+SCENARIO 3: Robustness Test
+============================================================
+
+Rotation angles range: [-15.0°, 15.0°]
+
+Robustness error (old approach): 0.002978
+Robustness error (new approach): 0.002970
+
+Expected from manuscript:
+  Old: 0.85
+  New: 0.12
+
+============================================================
+TABLE 1: Results of the experiment on synthetic data
+============================================================
+Metric                         Old Approach New Approach
+------------------------------------------------------------
+MSE on training data                  0.004        0.005
+Symmetry Defect (Sym_err)         13386.538        0.042
+Error on rotated data                 0.003        0.003
+------------------------------------------------------------
+
+Results saved to D:\GitHub\transition-matrix-equiv\outputs\synthetic

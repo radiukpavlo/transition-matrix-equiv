@@ -10,6 +10,9 @@ Implements all three scenarios:
 import numpy as np
 import sys
 import os
+import json
+import logging
+import datetime
 from pathlib import Path
 
 # Add src to path
@@ -25,6 +28,7 @@ from experiments.synthetic.data import (
     get_class_labels, EXPECTED_RESULTS
 )
 
+logger = logging.getLogger(__name__)
 
 def run_scenario_1(A: np.ndarray, B: np.ndarray, 
                    J_A: np.ndarray, J_B: np.ndarray,
@@ -35,9 +39,9 @@ def run_scenario_1(A: np.ndarray, B: np.ndarray,
     Computes T_old using pseudoinverse (fidelity-only objective).
     """
     if verbose:
-        print("\n" + "="*60)
-        print("SCENARIO 1: Old Approach (Static Transition Matrix)")
-        print("="*60)
+        logger.info("\n" + "="*60)
+        logger.info("SCENARIO 1: Old Approach (Static Transition Matrix)")
+        logger.info("="*60)
     
     # Compute baseline T
     T_old = compute_baseline_T(A, B)
@@ -50,12 +54,12 @@ def run_scenario_1(A: np.ndarray, B: np.ndarray,
     sym_err = symmetry_defect(T_old, J_A, J_B)
     
     if verbose:
-        print(f"\nT_old shape: {T_old.shape}")
-        print(f"MSE (fidelity): {mse_fid:.6f}")
-        print(f"Symmetry defect: {sym_err:.6f}")
-        print(f"\nExpected from manuscript:")
-        print(f"  MSE: {EXPECTED_RESULTS['old_approach']['mse_fid']}")
-        print(f"  Sym_err: {EXPECTED_RESULTS['old_approach']['sym_err']}")
+        logger.info(f"\nT_old shape: {T_old.shape}")
+        logger.info(f"MSE (fidelity): {mse_fid:.6f}")
+        logger.info(f"Symmetry defect: {sym_err:.6f}")
+        logger.info(f"\nExpected from manuscript:")
+        logger.info(f"  MSE: {EXPECTED_RESULTS['old_approach']['mse_fid']}")
+        logger.info(f"  Sym_err: {EXPECTED_RESULTS['old_approach']['sym_err']}")
     
     return {
         'T': T_old,
@@ -75,9 +79,9 @@ def run_scenario_2(A: np.ndarray, B: np.ndarray,
     Computes T_new balancing fidelity and equivariance.
     """
     if verbose:
-        print("\n" + "="*60)
-        print(f"SCENARIO 2: New Approach (Equivariant, lambda={lambda_})")
-        print("="*60)
+        logger.info("\n" + "="*60)
+        logger.info(f"SCENARIO 2: New Approach (Equivariant, lambda={lambda_})")
+        logger.info("="*60)
     
     # Compute equivariant T
     T_new = compute_equivariant_T(A, B, J_A, J_B, lambda_=lambda_)
@@ -90,12 +94,12 @@ def run_scenario_2(A: np.ndarray, B: np.ndarray,
     sym_err = symmetry_defect(T_new, J_A, J_B)
     
     if verbose:
-        print(f"\nT_new shape: {T_new.shape}")
-        print(f"MSE (fidelity): {mse_fid:.6f}")
-        print(f"Symmetry defect: {sym_err:.6f}")
-        print(f"\nExpected from manuscript:")
-        print(f"  MSE: {EXPECTED_RESULTS['new_approach']['mse_fid']}")
-        print(f"  Sym_err: {EXPECTED_RESULTS['new_approach']['sym_err']}")
+        logger.info(f"\nT_new shape: {T_new.shape}")
+        logger.info(f"MSE (fidelity): {mse_fid:.6f}")
+        logger.info(f"Symmetry defect: {sym_err:.6f}")
+        logger.info(f"\nExpected from manuscript:")
+        logger.info(f"  MSE: {EXPECTED_RESULTS['new_approach']['mse_fid']}")
+        logger.info(f"  Sym_err: {EXPECTED_RESULTS['new_approach']['sym_err']}")
     
     return {
         'T': T_new,
@@ -118,9 +122,9 @@ def run_scenario_3(A: np.ndarray, B: np.ndarray,
     Tests stability under random rotations in the range ±15°.
     """
     if verbose:
-        print("\n" + "="*60)
-        print("SCENARIO 3: Robustness Test")
-        print("="*60)
+        logger.info("\n" + "="*60)
+        logger.info("SCENARIO 3: Robustness Test")
+        logger.info("="*60)
     
     np.random.seed(random_seed)
     
@@ -130,7 +134,7 @@ def run_scenario_3(A: np.ndarray, B: np.ndarray,
     angles = np.random.uniform(angle_range[0], angle_range[1], size=m)
     
     if verbose:
-        print(f"\nRotation angles range: [{np.degrees(angle_range[0]):.1f}°, "
+        logger.info(f"\nRotation angles range: [{np.degrees(angle_range[0]):.1f}°, "
               f"{np.degrees(angle_range[1]):.1f}°]")
     
     # Rotate FM features (A) using the bridge
@@ -164,11 +168,11 @@ def run_scenario_3(A: np.ndarray, B: np.ndarray,
     err_new = robustness_error(B_target, B_pred_new_rot)
     
     if verbose:
-        print(f"\nRobustness error (old approach): {err_old:.6f}")
-        print(f"Robustness error (new approach): {err_new:.6f}")
-        print(f"\nExpected from manuscript:")
-        print(f"  Old: {EXPECTED_RESULTS['old_approach']['robustness_err']}")
-        print(f"  New: {EXPECTED_RESULTS['new_approach']['robustness_err']}")
+        logger.info(f"\nRobustness error (old approach): {err_old:.6f}")
+        logger.info(f"Robustness error (new approach): {err_new:.6f}")
+        logger.info(f"\nExpected from manuscript:")
+        logger.info(f"  Old: {EXPECTED_RESULTS['old_approach']['robustness_err']}")
+        logger.info(f"  New: {EXPECTED_RESULTS['new_approach']['robustness_err']}")
     
     return {
         'A_rot': A_rot,
@@ -181,6 +185,34 @@ def run_scenario_3(A: np.ndarray, B: np.ndarray,
     }
 
 
+def setup_logging(output_dir: Path, verbose: bool):
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = output_dir / f"run_{timestamp}.log"
+    
+    # Reset logger handlers if any
+    root_logger = logging.getLogger()
+    root_logger.handlers = []
+    root_logger.setLevel(logging.INFO)
+    
+    formatter = logging.Formatter('%(message)s')
+    
+    # File handler
+    fh = logging.FileHandler(log_file)
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(formatter)
+    root_logger.addHandler(fh)
+    
+    # Console handler
+    if verbose:
+        # Use stdout to capture normal flow
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(logging.INFO)
+        ch.setFormatter(formatter)
+        root_logger.addHandler(ch)
+    
+    logging.info(f"Logging initialized. Output to {log_file}")
+
+
 def run_full_experiment(epsilon: float = 0.01,
                         lambda_: float = 0.5,
                         random_seed: int = 42,
@@ -188,33 +220,21 @@ def run_full_experiment(epsilon: float = 0.01,
                         validate: bool = False) -> dict:
     """
     Run the complete synthetic experiment (Section 3.4).
-    
-    Parameters
-    ----------
-    epsilon : float
-        Small angle for generator estimation (radians). Default 0.01.
-    lambda_ : float
-        Weighting coefficient for equivariance. Default 0.5.
-    random_seed : int
-        Random seed for reproducibility. Default 42.
-    verbose : bool
-        Print results. Default True.
-    validate : bool
-        Raise assertion errors if results don't match expected. Default False.
-    
-    Returns
-    -------
-    dict
-        Complete results from all scenarios
     """
+    # Setup output directory
+    output_dir = Path(__file__).parent.parent.parent / 'outputs' / 'synthetic'
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    setup_logging(output_dir, verbose)
+    
     if verbose:
-        print("\n" + "#"*70)
-        print("# SYNTHETIC EXPERIMENT (Section 3.4)                                #")
-        print("#"*70)
-        print(f"\nParameters:")
-        print(f"  epsilon = {epsilon} rad")
-        print(f"  lambda = {lambda_}")
-        print(f"  Random seed = {random_seed}")
+        logger.info("\n" + "#"*70)
+        logger.info("# SYNTHETIC EXPERIMENT (Section 3.4)                                #")
+        logger.info("#"*70)
+        logger.info(f"\nParameters:")
+        logger.info(f"  epsilon = {epsilon} rad")
+        logger.info(f"  lambda = {lambda_}")
+        logger.info(f"  Random seed = {random_seed}")
     
     # Load data
     data = get_synthetic_data()
@@ -223,16 +243,16 @@ def run_full_experiment(epsilon: float = 0.01,
     labels = data['labels']
     
     if verbose:
-        print(f"\nData dimensions:")
-        print(f"  A: {A.shape} (FM features)")
-        print(f"  B: {B.shape} (MM features)")
-        print(f"  Samples: {data['m']}, Classes: {len(np.unique(labels))}")
+        logger.info(f"\nData dimensions:")
+        logger.info(f"  A: {A.shape} (FM features)")
+        logger.info(f"  B: {B.shape} (MM features)")
+        logger.info(f"  Samples: {data['m']}, Classes: {len(np.unique(labels))}")
     
     # Estimate generators using Algorithm 2 (MDS bridge)
     if verbose:
-        print("\n" + "-"*60)
-        print("Estimating Lie algebra generators (Algorithm 2)")
-        print("-"*60)
+        logger.info("\n" + "-"*60)
+        logger.info("Estimating Lie algebra generators (Algorithm 2)")
+        logger.info("-"*60)
     
     bridge_A = SyntheticBridge(random_state=random_seed)
     bridge_A.fit(A)
@@ -243,8 +263,8 @@ def run_full_experiment(epsilon: float = 0.01,
     J_B = bridge_B.estimate_generator(B, epsilon=epsilon)
     
     if verbose:
-        print(f"J_A shape: {J_A.shape}")
-        print(f"J_B shape: {J_B.shape}")
+        logger.info(f"J_A shape: {J_A.shape}")
+        logger.info(f"J_B shape: {J_B.shape}")
     
     # Run scenarios
     results_s1 = run_scenario_1(A, B, J_A, J_B, verbose=verbose)
@@ -259,15 +279,15 @@ def run_full_experiment(epsilon: float = 0.01,
     
     # Print summary table (Table 1)
     if verbose:
-        print("\n" + "="*60)
-        print("TABLE 1: Results of the experiment on synthetic data")
-        print("="*60)
-        print(f"{'Metric':<30} {'Old Approach':>12} {'New Approach':>12}")
-        print("-"*60)
-        print(f"{'MSE on training data':<30} {results_s1['mse_fid']:>12.3f} {results_s2['mse_fid']:>12.3f}")
-        print(f"{'Symmetry Defect (Sym_err)':<30} {results_s1['sym_err']:>12.3f} {results_s2['sym_err']:>12.3f}")
-        print(f"{'Error on rotated data':<30} {results_s3['robustness_err_old']:>12.3f} {results_s3['robustness_err_new']:>12.3f}")
-        print("-"*60)
+        logger.info("\n" + "="*60)
+        logger.info("TABLE 1: Results of the experiment on synthetic data")
+        logger.info("="*60)
+        logger.info(f"{'Metric':<30} {'Old Approach':>12} {'New Approach':>12}")
+        logger.info("-"*60)
+        logger.info(f"{'MSE on training data':<30} {results_s1['mse_fid']:>12.3f} {results_s2['mse_fid']:>12.3f}")
+        logger.info(f"{'Symmetry Defect (Sym_err)':<30} {results_s1['sym_err']:>12.3f} {results_s2['sym_err']:>12.3f}")
+        logger.info(f"{'Error on rotated data':<30} {results_s3['robustness_err_old']:>12.3f} {results_s3['robustness_err_new']:>12.3f}")
+        logger.info("-"*60)
     
     # Validation
     if validate:
@@ -276,7 +296,7 @@ def run_full_experiment(epsilon: float = 0.01,
         
         def check(actual, expected, name):
             if abs(actual - expected) / max(expected, 0.001) > tolerance:
-                print(f"WARNING: {name}: got {actual:.3f}, expected ~{expected:.3f}")
+                logger.warning(f"WARNING: {name}: got {actual:.3f}, expected ~{expected:.3f}")
         
         check(results_s1['mse_fid'], EXPECTED_RESULTS['old_approach']['mse_fid'], 
               "Old MSE")
@@ -288,7 +308,44 @@ def run_full_experiment(epsilon: float = 0.01,
         check(results_s3['robustness_err_new'], 
               EXPECTED_RESULTS['new_approach']['robustness_err'], "New Robustness")
         
-        print("\nValidation complete!")
+        logger.info("\nValidation complete!")
+        
+    # Save results to output directory
+    matrices_file = output_dir / 'matrices.npz'
+    np.savez(matrices_file, 
+             J_A=J_A, 
+             J_B=J_B, 
+             T_old=results_s1['T'], 
+             T_new=results_s2['T'],
+             A=A,
+             B=B,
+             labels=labels)
+             
+    results_file = output_dir / 'results.json'
+    json_results = {
+        'parameters': {
+            'epsilon': epsilon,
+            'lambda': lambda_,
+            'seed': random_seed
+        },
+        'metrics': {
+            'old_approach': {
+                'mse_fid': float(results_s1['mse_fid']),
+                'sym_err': float(results_s1['sym_err']),
+                'robustness_err': float(results_s3['robustness_err_old'])
+            },
+            'new_approach': {
+                'mse_fid': float(results_s2['mse_fid']),
+                'sym_err': float(results_s2['sym_err']),
+                'robustness_err': float(results_s3['robustness_err_new'])
+            }
+        }
+    }
+    
+    with open(results_file, 'w') as f:
+        json.dump(json_results, f, indent=2)
+    
+    logger.info(f"\nResults saved to {output_dir}")
     
     return {
         'scenario_1': results_s1,
