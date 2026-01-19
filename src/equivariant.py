@@ -257,7 +257,7 @@ def compute_equivariant_T_iterative(A: np.ndarray, B: np.ndarray,
     def matvec_symmetry_i(u, i):
         """Compute K_i @ u for generator i."""
         T = u.reshape((l, k), order='F')
-        term1 = T @ J_A_T[i]      # (l, k) @ (k, k) = (l, k)
+        term1 = T @ J_A[i]        # (l, k) @ (k, k) = (l, k)  <-- FIXED: was J_A_T
         term2 = J_B[i] @ T        # (l, l) @ (l, k) = (l, k)
         return lambda_ * (term1 - term2).ravel(order='F')
     
@@ -276,7 +276,7 @@ def compute_equivariant_T_iterative(A: np.ndarray, B: np.ndarray,
     def matvec_symmetry_T_i(v, i):
         """Compute K_i^T @ v."""
         V = v.reshape((l, k), order='F')
-        term1 = V @ J_A[i]        # (l, k) @ (k, k) = (l, k)
+        term1 = V @ J_A_T[i]      # (l, k) @ (k, k) = (l, k)  <-- FIXED: was J_A
         term2 = J_B[i].T @ V      # (l, l) @ (l, k) = (l, k)
         return lambda_ * (term1 - term2).ravel(order='F')
     
